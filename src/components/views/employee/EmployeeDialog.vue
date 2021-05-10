@@ -25,11 +25,15 @@
                   <div class="row-1">
                       <div class="code">
                         <span class="text">Mã<p style="color: red; display: inline;"> *</p></span>
-                        <input type="text" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode">
+                        <ValidationProvider name="Mã nhân viên" rules="required" v-slot="{ errors }">
+                          <input type="text" :title="errors[0]" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode" :class="errors[0] == null ? '' : 'input-error'">
+                        </ValidationProvider>
                       </div>
                       <div class="name">
                         <span class="text">Tên<p style="color: red; display: inline;"> *</p></span>
-                        <input type="text" style="width: 235px; margin-top: 4px;" v-model="employee.fullName">
+                        <ValidationProvider name="Tên nhân viên" rules="required" v-slot="{ errors }">
+                          <input type="text" :title="errors[0]" style="width: 235px; margin-top: 4px;" v-model="employee.fullName" :class="errors[0] == null ? '' : 'input-error'">
+                        </ValidationProvider>
                       </div>
                   </div>
                   <div class="row-1">                   
@@ -100,7 +104,9 @@
               <div class="row-1">                   
                 <div class="phone" style="margin-top: 17px; margin-left: 10px;">
                   <span class="text">ĐT di động</span>
-                  <input type="text" style="width: 197px; margin-top: 4px;" v-model="employee.phoneNumber">
+                  <ValidationProvider name="Số điện thoại" rules="required" v-slot="{ errors }">
+                    <input type="text" :title="errors[0]" style="width: 197px; margin-top: 4px;" v-model="employee.phoneNumber" :class="errors[0] == null ? '' : 'input-error'">
+                  </ValidationProvider>
                 </div>
                 <div class="phone" style="margin-top: 17px; margin-left: 5px;">
                   <span class="text">ĐT cố định</span>
@@ -108,7 +114,8 @@
                 </div>
                 <div class="name" style="margin-top: 17px; margin-left: 5px;">
                   <span class="text">Email</span><br>
-                  <input type="text" style="width: 203px; margin-top: 4px;" v-model="employee.email">
+                  <input type="text" style="width: 203px; margin-top: 4px;" v-model="employee.email" @blur="handleBlurEmail($event.target.value)"><br>
+                  <span style="color: red">{{ messageEmail }}</span>
                 </div>
               </div>
             </div>
@@ -175,10 +182,12 @@ export default {
   data() {
     return {
       infor: true,
+      messageEmail: null,
     }
   },
   methods: {
     btnCloseClick(){
+      this.messageEmail = null;
       this.$emit('hideDialogNotLoad');
     },
     btnInforClick(){
@@ -189,7 +198,7 @@ export default {
     },
 
     btnSaveClick(){
-      if(this.flag == "add"){
+      if(this.flag == "add"){       
         axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
           console.log(res.data);
           this.$emit('hideDialog');
@@ -200,15 +209,26 @@ export default {
         })
       }
       else if(this.flag == "edit"){
-        axios.post('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
-          console.log(res.data);
+        axios.put('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
+          console.log(res.data);         
           this.$emit('hideDialog');
         }).catch(res =>{
           console.log(res.data);
+          console.log(this.employee)
           this.$emit('hideDialog');
         })
       }
-    }
+    },
+
+    handleBlurEmail(ev) {
+      if (/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/.test(ev)) {
+        this.messageEmail = "";
+      } else if (ev == "") {
+        this.messageEmail = "Bắt buộc nhập trường này!";
+      } else {
+        this.messageEmail = "Email Không đúng định dạng!";
+      }
+    },
   },
 };
 </script>
@@ -479,5 +499,8 @@ input[type='radio']:checked:after {
 }
 .color:hover{
   background-color: #3ff128;
+}
+.input-error{
+  border: 1px solid red;
 }
 </style>

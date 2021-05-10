@@ -20,13 +20,12 @@ input{
     padding-right: 40px;
     width: 200px;
     flex-shrink: 0;
-    cursor: pointer;
 }
 input:hover{
-    border: 1px solid #019160;
+    border: 1px solid #2ca01c;
 }
 input:focus{
-    border-color: #019160;
+    border-color: #2ca01c;
     color: black;
     font-size: 13px;
 }
@@ -39,5 +38,4 @@ input:focus{
     padding-right: 40px;
     width: 240px;
     flex-shrink: 0;
-    cursor: pointer;
 }

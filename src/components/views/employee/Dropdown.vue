@@ -8,23 +8,29 @@
       </button>
       <div class="dropdown-content" :class="{ display: !valueDrop }">
         <div class="dropdown-row-1">Nhân bản</div>
-        <div class="dropdown-row-1">Xóa</div>
+        <div class="dropdown-row-1" @click="btnDelete">Xóa</div>
         <div class="dropdown-row-1">Ngưng sử dụng</div>
       </div>
-    </div>
+    </div>   
   </div>
 </template>
 <script>
 export default {
+  components:{
+  },
     data(){
         return {
             valueDrop: false,
+            showPopup: false,
         }
     },
     methods:{
         btnDropdownClick(){
             this.valueDrop = true;
         },
+        btnDelete(){
+          this.$emit('showPopup');
+        }
     },
     created(){
         window.addEventListener("click", (e) => {

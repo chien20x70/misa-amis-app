@@ -53,7 +53,7 @@
             placeholder="Tìm theo mã, tên nhân viên"
             class="input-search2"
           />
-          <div class="content-icon refresh"></div>
+          <div class="content-icon refresh" @click="btnRefreshClick"></div>
           <div class="content-icon excel__nav"></div>
           <div class="content-icon setting__list"></div>
         </div>
@@ -67,13 +67,14 @@
               </th>
               <th>MÃ NHÂN VIÊN</th>
               <th>TÊN NHÂN VIÊN</th>
+              <th>GIỚI TÍNH</th>
+              <th>NGÀY SINH</th>             
+              <th>SỐ CMND</th>
               <th>CHỨC DANH</th>
+              <th>TÊN ĐƠN VỊ</th>
               <th>SỐ TÀI KHOẢN</th>
               <th>TÊN NGÂN HÀNG</th>
-              <th>TRẠNG THÁI</th>
-              <th>GIỚI TÍNH</th>
-              <th>NGÀY SINH</th>
-              <th>SỐ CMND</th>
+              <th>CHI NHÁNH TK NGÂN HÀNG</th>
               <th>CHỨC NĂNG</th>
             </tr>
           </thead>
@@ -84,7 +85,7 @@
               @dblclick="dblClickTable(employee.employeeId)"
             >
               <td style="width: 34px;">
-                <input type="checkbox" class="check-box" />
+                <input type="checkbox" class="check-box"/>
               </td>
               <td>{{ employee.employeeCode }}</td>
               <td>{{ employee.fullName }}</td>
@@ -95,14 +96,15 @@
               <td>{{ employee.departmentId | showDepartment }}</td>
               <td>{{ employee.bankAccountNumber }}</td>
               <td>{{ employee.bankName }}</td>
+              <td>{{ employee.bankBranchName }}</td>
               <td>
                 <div class="btn-edit">
-                  <button class="btn-btn hover" @click="btnEditClick(employee.employeeId)">
+                  <button class="btn-btn hover" @click="btnEditClick(employee.employeeId, employee.employeeCode)">
                       <div class="flex btn-btn-text">
                           <span class="pr-4" style="color: #0075c0; font-weight: 600">Sửa</span>
                       </div>
                   </button>                  
-                  <Dropdown/>
+                  <Dropdown @showPopup="showPopup(employee.employeeId, employee.employeeCode)"/>
                 </div>
               </td>
             </tr>
@@ -121,19 +123,22 @@
       :employee="selectedEmployee"
       :flag="status"
     />
+    <Popup :popState="valuePopup" @hidePopupNotLoad="hidePopupNotLoad" @hidePopup="hidePopup" :employeeClickCode="recordCode" :employeeClickId="recordId"/>
     <div class="fa-3x" v-if="isBusy">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" style="color: green;"></i>
     </div>
   </div>
 </template>
 <script>
 import EmployeeDialog from "./EmployeeDialog.vue";
 import Dropdown from "./Dropdown.vue"
+import Popup from "./Popup.vue"
 import axios from "axios";
 export default {
   components: {
     EmployeeDialog,
-    Dropdown
+    Dropdown,
+    Popup
   },
   data() {
     return {
@@ -142,7 +147,9 @@ export default {
       selectedEmployee: {},
       recordId: null,
       status: null,
-      isBusy: false,
+      isBusy: false,       
+      valuePopup: true,  
+      recordCode: null,  
     };
   },
   created() {
@@ -184,10 +191,28 @@ export default {
     hideDialogNotLoad() {
       this.show = false;
     },
-
     hideDialog() {
       this.show = false;
       this.loadData();
+    },
+
+    showPopup(employeeId, employeeCode){
+      this.valuePopup = false;
+
+      // Lưu giá trị Id khi click vào nút sửa trên bảng.
+      this.recordId = employeeId;
+      this.recordCode = employeeCode;
+      console.log(this.recordId)
+      console.log(this.recordCode)
+    },
+    
+    hidePopup(){
+      this.valuePopup = true;
+      this.loadData();
+    },
+
+    hidePopupNotLoad() {
+      this.valuePopup = true;
     },
 
     dblClickTable(eId) {
@@ -217,7 +242,10 @@ export default {
 
     btnEditClick(employeeClickId){
       this.dblClickTable(employeeClickId);
+    },
 
+    btnRefreshClick(){
+      this.loadData();
     },
 
     dateFormatYYMMDD(date) {
@@ -231,25 +259,6 @@ export default {
     },
   },
   filters: {
-    dateFormatDDMMYY(date) {
-      var newDate = new Date(date);
-      var day = newDate.getDate();
-      var month = newDate.getMonth() + 1;
-      var year = newDate.getFullYear();
-      day = day < 10 ? "0" + day : day;
-      month = month < 10 ? "0" + month : month;
-      return `${day}/${month}/${year}`;
-    },
-
-    showDepartment(value) {
-      if (value == "f79d916a-ae77-11eb-8a1f-00163e047e89") {
-        return "Phòng nhân sự";
-      } else if (value == "f79d9419-ae77-11eb-8a1f-00163e047e89") {
-        return "Phòng đào tạo";
-      } else if (value == "f79d915a-ae77-11eb-8a1f-00163e047e89") {
-        return "Phòng quản lý";
-      }
-    },
 
     showGender(value) {
       if (value == "1") {
@@ -463,6 +472,7 @@ export default {
   left: 45%;
   top: 43%;
   transform: translate(-50%, -50%);
+  /* background-image: url('../../../assets/loading.svg'); */
 }
 
 .dropdown {
