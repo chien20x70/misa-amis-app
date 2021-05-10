@@ -1,177 +1,350 @@
 <template>
-    <div class="navbar">
-        <div class="navbar-header">
-            <div class="toggle"></div>
-            <div class="logo"></div>
-        </div>
-        <div class="menu-item">
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-dashboard"></div>
-                <div class="navbar-content-text">Tổng quan</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-cash"></div>
-                <div class="navbar-content-text">Tiền mặt</div>
-            </a>
-            <router-link class="navbar-content" to="/employee">
-                <div class="navbar-content-icon sidebar-bank"></div>
-                <div class="navbar-content-text">Danh sách nhân viên</div>
-            </router-link>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-pu"></div>
-                <div class="navbar-content-text">Mua hàng</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-sale"></div>
-                <div class="navbar-content-text">Bán hàng</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-invoice"></div>
-                <div class="navbar-content-text">Quản lý hóa đơn</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-stock"></div>
-                <div class="navbar-content-text">Kho</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-tools"></div>
-                <div class="navbar-content-text">Công cụ dụng cụ</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-fixed-assets"></div>
-                <div class="navbar-content-text">Tài sản cố định</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-tax"></div>
-                <div class="navbar-content-text">Thuế</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-price"></div>
-                <div class="navbar-content-text">Giá thành</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-general"></div>
-                <div class="navbar-content-text">Tổng hợp</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-budget"></div>
-                <div class="navbar-content-text">Ngân sách</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-report"></div>
-                <div class="navbar-content-text">Báo cáo</div>
-            </a>
-            <a class="navbar-content" href="#">
-                <div class="navbar-content-icon sidebar-finance"></div>
-                <div class="navbar-content-text">Phân tích tài chính</div>
-            </a>
-        </div>        
+  <div id="navbar">
+    <div class="logo-container">
+      <div class="mi mi-24 mi-logo-option"></div>
+      <div class="logo-img"></div>
     </div>
+    <div class="menu-item-list">
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 0 }"
+        v-on:click="selectItem(0)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-dashboard"></div>
+        </div>
+        <div class="menu-item-title">Tổng quan</div>
+      </div>
+      <router-link
+        class="menu-item"
+        to="/employee"
+        v-bind:class="{ active: selectedItem == 1 }"
+        v-on:click="selectItem(1)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-cash"></div>
+        </div>
+        <div class="menu-item-title">Tiền mặt</div>
+      </router-link>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 2 }"
+        v-on:click="selectItem(2)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-bank"></div>
+        </div>
+        <div class="menu-item-title">Tiền gửi</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 3 }"
+        v-on:click="selectItem(3)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-pu"></div>
+        </div>
+        <div class="menu-item-title">Mua hàng</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 4 }"
+        v-on:click="selectItem(4)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-sale"></div>
+        </div>
+        <div class="menu-item-title">Bán hàng</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 5 }"
+        v-on:click="selectItem(5)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-invoice"></div>
+        </div>
+        <div class="menu-item-title">Quản lí hoá đơn</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 6 }"
+        v-on:click="selectItem(6)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-stock"></div>
+        </div>
+        <div class="menu-item-title">Kho</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 7 }"
+        v-on:click="selectItem(7)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-tools"></div>
+        </div>
+        <div class="menu-item-title">Công cụ dụng cụ</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 8 }"
+        v-on:click="selectItem(8)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-fixed-assets"></div>
+        </div>
+        <div class="menu-item-title">Tài sản cố định</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 9 }"
+        v-on:click="selectItem(9)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-tax"></div>
+        </div>
+        <div class="menu-item-title">Thuế</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 10 }"
+        v-on:click="selectItem(10)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-price"></div>
+        </div>
+        <div class="menu-item-title">Giá thành</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 11 }"
+        v-on:click="selectItem(11)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-general"></div>
+        </div>
+        <div class="menu-item-title">Tổng hợp</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 12 }"
+        v-on:click="selectItem(12)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-budget"></div>
+        </div>
+        <div class="menu-item-title">Ngân sách</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 13 }"
+        v-on:click="selectItem(13)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-report"></div>
+        </div>
+        <div class="menu-item-title">Báo cáo</div>
+      </div>
+      <div
+        class="menu-item"
+        v-bind:class="{ active: selectedItem == 14 }"
+        v-on:click="selectItem(14)"
+      >
+        <div class="menu-item-icon">
+          <div class="mi mi-24 mi-sidebar-finance"></div>
+        </div>
+        <div class="menu-item-title">Báo cáo tài chính</div>
+      </div>
+    </div>
+  </div>
 </template>
+
 <script>
-export default {};
+export default {
+  name: "MyNavbar",
+  data: function () {
+    return {
+      selectedItem: 0,
+    };
+  },
+  methods: {
+    selectItem: function (item) {
+      this.selectedItem = item;
+    },
+  },
+};
 </script>
+
 <style scoped>
-.navbar {
-  width: 178px;
+#navbar {
+  background: #393a3d;
   height: 100vh;
-  background-color: #393a3d;
+  width: 178px;
+  font-family: GoogleSans-Regular;
 }
-.navbar .navbar-header{
-    height: 48px;
-    display: flex;
-    align-items: center;
+.logo-container {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.navbar .navbar-header .toggle{
-    flex-shrink: 0;
-    margin-left: 24px; 
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    background: url('../../assets/Sprites.5f05e81f.svg') no-repeat -424px -86px;
+.logo-img {
+  height: 32px;
+  width: 96px;
+  background-image: url("../../assets/Logo_Module_TiengViet_White.66947422.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
-.navbar .navbar-header .logo{
-    height: 32px;
-    width: 100%;
-    background-image: url("../../assets/Logo_Module_TiengViet_White.66947422.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    flex-shrink: 0;
+.menu-item-list {
+  padding-top: 14px;
 }
-.navbar .menu-item{
-    padding-top: 14px;
+.menu-item {
+  width: 178px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
 }
-.menu-item .navbar-content{
-    height: 42px;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #fff;
-    cursor: pointer;
+.menu-item::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  background: rgb(51, 191, 34);
+  top: 0;
+  left: 0;
+  display: none;
 }
-/* .navbar-content:focus{
-    font-weight: 700;
-} */
-.navbar-content:hover{
-    background-color: rgba(255, 255, 255, 0.2);   
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
-.navbar-content-icon{
-    background: url("../../assets/Sprites.5f05e81f.svg") no-repeat;
-    cursor: pointer;
-    min-width: 24px;
-    min-height: 24px;
-    height: 24px;
-    width: 24px;
-    margin-left: 8px;
-    margin-right: 8px;
+.menu-item.active {
+  background: rgba(255, 255, 255, 0.2);
 }
-.navbar-content-text{
-    font-weight: 400;
+.menu-item.active::before {
+  display: block;
 }
-.sidebar-dashboard {
-    background-position: -30px -1585px;
+.menu-item .menu-item-icon {
+  margin-right: 8px;
+  margin-left: 16px;
 }
-.sidebar-cash {
-    background-position: -73px -1628px;
+
+.menu-item .menu-item-title {
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: GoogleSans-Regular;
+  text-decoration: none;
 }
-.sidebar-bank {
-    background-position: -117px -1628px;
+.menu-item.active .menu-item-title {
+  font-family: GoogleSans-Regular;
 }
-.sidebar-pu {
-    background-position: -161px -1628px;
+.mi-24 {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
 }
-.sidebar-sale {
-    background-position: -204px -1628px;
+.mi-14 {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
 }
-.sidebar-invoice {
-    background-position: -249px -1628px;
+
+.mi-16 {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
 }
-.sidebar-stock {
-    background-position: -291px -1628px;
+
+.mi {
+  background: url("../../assets/Sprites.5f05e81f.svg") no-repeat;
+  cursor: pointer;
 }
-.sidebar-tools {
-    background-position: -336px -1628px;
+
+.mi-sidebar-dashboard {
+  background-position: -30px -1628px;
 }
-.sidebar-fixed-assets {
-    background-position: -378px -1630px;
+.active .mi-sidebar-dashboard {
+  background-position: -30px -1585px;
 }
-.sidebar-tax {
-    background-position: -423px -1630px;
+
+.mi-sidebar-cash {
+  background-position: -73px -1628px;
 }
-.sidebar-price {
-    background-position: -467px -1628px;
+
+.mi-sidebar-bank {
+  background-position: -117px -1628px;
 }
-.sidebar-general {
-    background-position: -510px -1628px;
+
+.mi-sidebar-pu {
+  background-position: -161px -1628px;
 }
-.sidebar-budget {
-    background-position: -378px -1659px;
+
+.mi-sidebar-sale {
+  background-position: -204px -1628px;
 }
-.sidebar-report {
-    background-position: -547px -1628px;
+
+.mi-sidebar-invoice {
+  background-position: -249px -1628px;
 }
-.sidebar-finance {
-    background-position: -204px -1664px;
+
+.mi-sidebar-stock {
+  background-position: -291px -1628px;
+}
+
+.mi-sidebar-tools {
+  background-position: -336px -1628px;
+}
+
+.mi-sidebar-fixed-assets {
+  background-position: -378px -1630px;
+}
+
+.mi-sidebar-tax {
+  background-position: -423px -1630px;
+}
+
+.mi-sidebar-price {
+  background-position: -467px -1628px;
+}
+
+.mi-sidebar-general {
+  background-position: -510px -1628px;
+}
+
+.mi-sidebar-budget {
+  background-position: -378px -1659px;
+}
+
+.mi-sidebar-report {
+  background-position: -547px -1628px;
+}
+
+.mi-sidebar-finance {
+  background-position: -204px -1664px;
+}
+
+.mi-logo-option {
+  background-position: -424px -86px;
+  margin-right: 10px;
+}
+
+.active .mi {
+  background-position-y: -1585px;
+}
+
+.active .mi-sidebar-finance {
+  background-position: -248px -1664px;
+}
+
+.active .mi-sidebar-budget {
+  background-position: -423px -1659px;
 }
 </style>

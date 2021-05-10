@@ -52,6 +52,8 @@
             type="text"
             placeholder="Tìm theo mã, tên nhân viên"
             class="input-search2"
+            :value="filter"
+            @input="onChangeInputEmployeeFilter"
           />
           <div class="content-icon refresh" @click="btnRefreshClick"></div>
           <div class="content-icon excel__nav"></div>
@@ -112,8 +114,26 @@
         </table>
       </div>
       <div class="content-navpage">
-        <div class="content-navpage-text-left">Tổng số: 13 bản ghi</div>
-        <div class="content-navpage-text-right right">10 Khách hàng/trang</div>
+        <div class="content-navpage-text-left">Tổng số: {{totalRecord}} bản ghi</div>
+        <div class="footer-complete">
+          <!-- <div class="autocomplete">
+            <div class="selected-option">
+              <div class=""></div>
+            </div>
+          </div> -->
+          <select name="" id="" :value="pageSize" @click="onSelectedValue">
+            <option value="10">10 bản ghi trên 1 trang</option>
+            <option value="20">20 bản ghi trên 1 trang</option>
+            <option value="30">30 bản ghi trên 1 trang</option>
+            <option value="40">50 bản ghi trên 1 trang</option>
+            <option value="50">100 bản ghi trên 1 trang</option>
+          </select>
+          <button class="style">Trước</button>
+          <button class="style">1</button>
+          <button class="style">2</button>
+          <button class="style">Sau</button>
+        </div>
+        
       </div>
     </div>
     <EmployeeDialog
@@ -142,79 +162,126 @@ export default {
   },
   data() {
     return {
-      employees: [],
-      show: false,
-      selectedEmployee: {},
-      recordId: null,
-      status: null,
-      isBusy: false,       
-      valuePopup: true,  
-      recordCode: null,  
+      employees: [],            // Mảng nhân viên
+      show: false,              // Giá trị hiển thị dialog
+      selectedEmployee: {},     // data 1 nhân viên khi dblClick hoặc click btn Sửa
+      recordId: null,           // Lưu giá trị của EmployeeId để truyền qua Popup
+      status: null,             // Trạng thái nút là Thêm mới hay Sửa
+      isBusy: false,            // Trạng thái của icon Loading
+      valuePopup: true,         // Giá trị hiển thị Popup
+      recordCode: null,         // Lưu giá trị Employeecode truyền qua Popup
+      totalRecord: 0,           // Tổng số bản ghi Empployee
+      pageSize: 10,             // Bao nhiêu nhân viên / trang
+      filter:  "",              // Giá trị truyền vào input để lọc
+
     };
   },
   created() {
     this.loadData();
   },
   methods: {
+    /* 
+    hàm loadData lấy về 1 danh sách nhân viên từ API
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     loadData() {
+      // Bắt đầu load thì hiển thị icon Load
       this.isBusy = true;
       axios
         .get("https://localhost:44314/api/v1/Employees")
         .then((response) => {
           console.log(response);
           this.employees = response.data;
+          // Gán tổng số bản ghi bằng độ lớn của mảng trả về
+          this.totalRecord = this.employees.length
         })
         .catch((response) => {
           console.log(response);
         })
         .then(() => {
+          // Load xong thì tắt icon load
           this.isBusy = false;
         });
     },
+
+    /* 
+    Click thêm mới 1 nhân viên 
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     btnAddClick() {
+      // Hiển thị dialog
       this.show = true;
+      // Gán giá trị là nút Thêm mới
       this.status = "add";
       axios
         .get("https://localhost:44314/api/v1/Employees/employeeCode")
         .then((response) => {
           console.log(response.data);
+          //
           var increCode = response.data;
+          // Cắt chuỗi trả về
           increCode = increCode.substring(4);
+          // Gán tất cả các ô data của dialog rỗng
           this.selectedEmployee = {};
-          this.selectedEmployee.employeeCode = "NV00" + (Number(increCode) + 1);
+          // Gán code Max cho ô Mã nhân viên
+          this.selectedEmployee.employeeCode = "NV-0" + (Number(increCode) + 1);
         })
         .catch((response) => {
           console.log(response);
         });
     },
 
+    /* 
+    Đóng dialog mà không load lại dữ liệu
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     hideDialogNotLoad() {
       this.show = false;
     },
+
+    /* 
+    Đóng dialog có load lại dữ liệu
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     hideDialog() {
       this.show = false;
       this.loadData();
     },
 
+    /* 
+    Hiển thị Popup
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     showPopup(employeeId, employeeCode){
       this.valuePopup = false;
 
       // Lưu giá trị Id khi click vào nút sửa trên bảng.
       this.recordId = employeeId;
       this.recordCode = employeeCode;
-      console.log(this.recordId)
-      console.log(this.recordCode)
     },
     
+    /* 
+    Đóng popup có load lại dữ liệu
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     hidePopup(){
       this.valuePopup = true;
       this.loadData();
     },
 
+    /* 
+    Đóng popup mà không load lại dữ liệu
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     hidePopupNotLoad() {
       this.valuePopup = true;
     },
 
+    /* 
+    dblClick vào 1 dòng trong table
+    - Lấy ra 1 nhân viên được chọn
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     dblClickTable(eId) {
       // gán cờ thành nút sửa
       this.status = "edit";
@@ -228,26 +295,84 @@ export default {
         .then((response) => {
           console.log(response);
           this.selectedEmployee = response.data;
-          this.selectedEmployee.dateOfBirth = this.dateFormatYYMMDD(
-            this.selectedEmployee.dateOfBirth
-          );
-          this.selectedEmployee.dateOfIN = this.dateFormatYYMMDD(
-            this.selectedEmployee.dateOfIN
-          );
+          // format lại dữ liệu hiển thị
+          this.selectedEmployee.dateOfBirth = this.dateFormatYYMMDD(this.selectedEmployee.dateOfBirth);
+          this.selectedEmployee.dateOfIN = this.dateFormatYYMMDD(this.selectedEmployee.dateOfIN);
         })
         .catch((response) => {
           console.log(response);
         });
     },
 
+    /* 
+    Click nút Sửa trong table
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     btnEditClick(employeeClickId){
       this.dblClickTable(employeeClickId);
     },
 
+    /* 
+    Load lại dữ liệu khi click vào nút refresh
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     btnRefreshClick(){
       this.loadData();
     },
 
+    /* 
+    Lọc data bằng các tham số truyền vào
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
+    filterData(){
+      this.isBusy = true;
+      axios
+        .get(`https://localhost:44314/api/v1/Employees/Filter?pageSize=${this.pageSize}&pageIndex=1&filter=${this.filter}`)
+        .then((response) => {
+          console.log(response);
+          this.employees = response.data.data;
+          this.totalRecord = this.employees.length;
+        })
+        .catch((response) => {
+          console.log(response);
+        })
+        .then(() => {
+          this.isBusy = false;
+        });
+    },
+
+    /* 
+    Kiểm tra giá trị input thay đổi thì lọc mảng nhân viên bằng cách gọi tới API
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
+    onChangeInputEmployeeFilter(e){
+      let val = e.target.value;
+      clearTimeout(this.timeOut);
+      this.timeOut = setTimeout(() => {
+        this.filter = val;
+        console.log(this.filter)
+        this.filterData();
+      }, 1000);
+    },
+
+    /* 
+    Kiểm tra click chọn giá trị select.
+    - Lọc lại mảng nhân viên khi click.
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
+    onSelectedValue(e){
+      let val = e.target.value
+      console.log(e.target.value);
+      this.pageSize = val;
+      console.log(this.filter);
+      this.filterData();
+      
+    },
+
+    /* 
+    Format dữ liệu ngày tháng năm theo định dạng yyyy-mm-dd
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     dateFormatYYMMDD(date) {
       var newDate = new Date(date);
       var day = newDate.getDate();
@@ -259,7 +384,10 @@ export default {
     },
   },
   filters: {
-
+    /* 
+    Hiển thị giá trị Giới tính
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     showGender(value) {
       if (value == "1") {
         return "Nam";
@@ -411,7 +539,7 @@ export default {
 .item .item-right {
   display: flex;
   align-items: center;
-  width: 23%;
+  width: 380px;
   justify-content: space-between;
 }
 .content-table .content-table-height {
@@ -490,5 +618,35 @@ export default {
 }
 .display{
   display: none;
+}
+
+.footer-complete{
+  width: 400px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.autocomplete{
+    display: flex;
+    min-height: 32px;
+    border: 1px solid #babec5;
+    border-radius: 2px;
+    background-color: #fff;
+    height: 32px;
+    width: 200px;
+}
+.selected-option{
+  display: flex;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    width: calc(100% - 32px);
+    align-items: center;
+    padding: 6px 0 6px 12px;
+}
+.style{
+  border: none;
+  background-color: white;
 }
 </style>

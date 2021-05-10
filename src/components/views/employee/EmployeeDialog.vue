@@ -175,29 +175,49 @@
 import axios from 'axios'
 export default {
   props:{
-    state:{ type: Boolean, selector: false},
-    employee:{ type: Object, selector: null},
-    flag:{ type: String, selector: null},
+    state:{ type: Boolean, selector: false},          // Trạng thái hiển thị Dialog
+    employee:{ type: Object, selector: null},         // Đối tượng nhân viên được truyền từ EmployeeList sang
+    flag:{ type: String, selector: null},             // Cờ để check giá trị nút Thêm mới hay Sửa
   },
   data() {
     return {
-      infor: true,
-      messageEmail: null,
+      infor: true,                // Giá trị hiển thị tab Liên hệ hay tài khoản ngân hàng              
+      messageEmail: null,         // Message lỗi
     }
   },
   methods: {
+
+    /* 
+    Click đóng Dialog
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     btnCloseClick(){
-      this.messageEmail = null;
+      this.messageEmail = null;     
       this.$emit('hideDialogNotLoad');
     },
+
+    /* 
+    Click để hiển thị Tab Liên hệ hay tab tài khoản ngân hàng
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     btnInforClick(){
       this.infor = true;
     },
+
+    /* 
+    Click để hiển thị Tab Liên hệ hay tab tài khoản ngân hàng
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     btnBankClick(){
       this.infor = false;
     },
 
+    /* 
+    Click Save nhân viên
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     btnSaveClick(){
+      // Kiểm tra nút Thêm hay Sửa
       if(this.flag == "add"){       
         axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
           console.log(res.data);
@@ -208,6 +228,7 @@ export default {
           this.$emit('hideDialog');
         })
       }
+      // Kiểm tra nút Thêm hay Sửa
       else if(this.flag == "edit"){
         axios.put('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
           console.log(res.data);         
@@ -220,6 +241,10 @@ export default {
       }
     },
 
+    /* 
+    Xử lý blur khỏi Input Email
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     handleBlurEmail(ev) {
       if (/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/.test(ev)) {
         this.messageEmail = "";

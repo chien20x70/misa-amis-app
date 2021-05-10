@@ -4,7 +4,7 @@
         <div class="popup-box">
           <div class="popup-content">
             <div class="popup-icon exclamation-warning-48"></div>
-            <div class="message">Bạn có thực sự muốn xóa Nhân viên {{employeeClickCode}} không?</div>
+            <div class="message">Bạn có thực sự muốn xóa Nhân viên &lt;{{employeeClickCode}}&gt; không?</div>
           </div>
           <div class="btn-footer">
             <button class="btn-No" @click="btnNoClick">Không</button>
@@ -41,7 +41,7 @@ export default {
 <style scoped>
 .popup{
 }
-/* .popup .model {
+.popup .model {
   width: 100%;
   background: rgba(0, 0, 0, 0.4);
   position: fixed;
@@ -51,7 +51,7 @@ export default {
   z-index: 98;
   transition: all 0.25s ease;
  opacity: 1; 
-} */
+}
 .popup .popup-box{
   border-radius: 4px;
   width: 444px;
@@ -63,6 +63,7 @@ export default {
   background-color: white;
   box-shadow: 0 5px 20px 0 rgb(0 0 0 / 10%);
   padding: 32px;
+  z-index: 100;
 }
 .popup-content{
   display: flex;
