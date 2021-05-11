@@ -121,19 +121,21 @@
               <div class=""></div>
             </div>
           </div> -->
-          <select name="" id="" :value="pageSize" @click="onSelectedValue">
+          <select name="" id="" :value="pageSize" @change.prevent="onSelectedValue">
             <option value="10">10 bản ghi trên 1 trang</option>
             <option value="20">20 bản ghi trên 1 trang</option>
             <option value="30">30 bản ghi trên 1 trang</option>
             <option value="40">50 bản ghi trên 1 trang</option>
             <option value="50">100 bản ghi trên 1 trang</option>
           </select>
-          <button class="style">Trước</button>
-          <button class="style">1</button>
-          <button class="style">2</button>
-          <button class="style">Sau</button>
-        </div>
-        
+          <button class="style margin" :class="{'disable': (pageIndex == 1)}" @click="onClickPag(pageIndex - 1)">Trước</button>
+          <button class="style margin" :class="{'active': (pageIndex == 1)}" @click="onClickPag(1)">1</button>
+          <button v-if="pageIndex > 3" class="style margin disable">...</button>
+          <button v-for="p in pageIndexs" :key="p" class="style margin" :class="{ active: pageIndexs == p }" @click="onClickPag(p)">{{ p }}</button>
+          <button v-if="pageIndex < totalPages - 3" class="style margin disable">...</button>
+          <button class="style margin" :class="{'disable': (pageIndex == totalPages), 'display': (totalPages == 1)}" @click="onClickPag(totalPages)">{{totalPages}}</button>
+          <button class="style margin">Sau</button>
+        </div>        
       </div>
     </div>
     <EmployeeDialog
@@ -173,7 +175,9 @@ export default {
       totalRecord: 0,           // Tổng số bản ghi Empployee
       pageSize: 10,             // Bao nhiêu nhân viên / trang
       filter:  "",              // Giá trị truyền vào input để lọc
-
+      pageIndex: 1,
+      arrPag: [],
+      totalPages: 1,
     };
   },
   created() {
@@ -318,6 +322,7 @@ export default {
     */
     btnRefreshClick(){
       this.loadData();
+      this.totalPages = 1;
     },
 
     /* 
@@ -327,11 +332,13 @@ export default {
     filterData(){
       this.isBusy = true;
       axios
-        .get(`https://localhost:44314/api/v1/Employees/Filter?pageSize=${this.pageSize}&pageIndex=1&filter=${this.filter}`)
+        .get(`https://localhost:44314/api/v1/Employees/Filter?pageSize=${this.pageSize}&pageIndex=${this.pageIndex}&filter=${this.filter}`)
         .then((response) => {
           console.log(response);
           this.employees = response.data.data;
           this.totalRecord = this.employees.length;
+          this.totalPages = response.data.totalPages;
+          console.log(this.totalPages);         
         })
         .catch((response) => {
           console.log(response);
@@ -369,6 +376,12 @@ export default {
       
     },
 
+    
+    onClickPag(page) {
+      this.pageIndex = page;
+      this.filterData();
+    },
+
     /* 
     Format dữ liệu ngày tháng năm theo định dạng yyyy-mm-dd
     CreatedBy: NXCHIEN 10/05/2021 
@@ -381,6 +394,16 @@ export default {
       day = day < 10 ? "0" + day : day;
       month = month < 10 ? "0" + month : month;
       return `${year}-${month}-${day}`;
+    },
+  },
+  computed: {
+    pageIndexs: function () {
+      let ps = [];
+      let start = this.pageIndex > 3 ? this.pageIndex - 1 : 2;
+      let end =
+        this.pageIndex < this.totalPages - 3 ? this.pageIndex + 1 : this.totalPages - 1;
+      for (let i = start; i <= end; i++) ps.push(i);
+      return ps;
     },
   },
   filters: {
@@ -621,7 +644,6 @@ export default {
 }
 
 .footer-complete{
-  width: 400px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -649,4 +671,14 @@ export default {
   border: none;
   background-color: white;
 }
+.margin{
+  margin-left: 20px;
+}
+.disable{
+  cursor: not-allowed;
+}
+.active{
+  font-weight: 700;
+}
+
 </style>

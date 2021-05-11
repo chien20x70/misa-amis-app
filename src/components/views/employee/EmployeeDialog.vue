@@ -246,13 +246,13 @@ export default {
     CreatedBy: NXCHIEN 10/05/2021
     */
     handleBlurEmail(ev) {
-      if (/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/.test(ev)) {
+      if (/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/.test(ev)) {        
         this.messageEmail = "";
       } else if (ev == "") {
         this.messageEmail = "Bắt buộc nhập trường này!";
       } else {
         this.messageEmail = "Email Không đúng định dạng!";
-      }
+      }     
     },
   },
 };
