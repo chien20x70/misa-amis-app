@@ -28,8 +28,9 @@ const router = new VueRouter({
   routes
 })
 
-Vue.filter('dateFormatDDMMYY', function (date) {
-  if (!date) return ''
+Vue.filter('dateFormatDDMMYY', function (date) { 
+  if(date == null) return ""
+  if(date == "0001-01-01T00:00:00") return ""
   var newDate = new Date(date);
   var day = newDate.getDate();
   var month = newDate.getMonth() + 1;

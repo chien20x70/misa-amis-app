@@ -56,7 +56,7 @@
             @input="onChangeInputEmployeeFilter"
           />
           <div class="content-icon refresh" @click="btnRefreshClick"></div>
-          <div class="content-icon excel__nav"></div>
+          <div class="content-icon excel__nav" @click="btnExportClick"></div>
           <div class="content-icon setting__list"></div>
         </div>
       </div>
@@ -175,9 +175,8 @@ export default {
       totalRecord: 0,           // Tổng số bản ghi Empployee
       pageSize: 10,             // Bao nhiêu nhân viên / trang
       filter:  "",              // Giá trị truyền vào input để lọc
-      pageIndex: 1,
-      arrPag: [],
-      totalPages: 1,
+      pageIndex: 1,             // Trang hiện tại
+      totalPages: 1,            // Tổng số trang
     };
   },
   created() {
@@ -224,11 +223,11 @@ export default {
           //
           var increCode = response.data;
           // Cắt chuỗi trả về
-          increCode = increCode.substring(4);
+          increCode = increCode.substring(3);
           // Gán tất cả các ô data của dialog rỗng
           this.selectedEmployee = {};
           // Gán code Max cho ô Mã nhân viên
-          this.selectedEmployee.employeeCode = "NV-0" + (Number(increCode) + 1);
+          this.selectedEmployee.employeeCode = "NV-" + (Number(increCode) + 1);
         })
         .catch((response) => {
           console.log(response);
@@ -377,12 +376,24 @@ export default {
       
     },
 
-    
+    /* 
+    Kiểm tra click thay đổi phân trang
+    - Lọc lại mảng nhân viên khi click.
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     onClickPag(page) {
       this.pageIndex = page;
       this.filterData();
     },
 
+    /* 
+    Export data ra file excel
+    - mở 1 cửa số mới call đến API
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
+    btnExportClick(){
+      window.open(`https://localhost:44314/api/v1/Employees/ExportingExcel?pageSize=${this.pageSize}&pageIndex=${this.pageIndex}&filter=${this.filter}`,"_blank");
+    },
     /* 
     Format dữ liệu ngày tháng năm theo định dạng yyyy-mm-dd
     CreatedBy: NXCHIEN 10/05/2021 
@@ -398,11 +409,19 @@ export default {
     },
   },
   computed: {
+    /* 
+    Mảng chứa các phần tử ở giữa nút số 1 và trang cuối cùng trong phân trang
+    CreatedBy: NXCHIEN 10/05/2021 
+    */
     pageIndexs: function () {
-      let ps = [];
+      let ps = [];      // Khởi tạo mảng
+
+      // Nếu trang hiện tại > 3 thì bắt đầu từ nút trang hiện tại trừ 1 còn nếu <=3 thì nút bắt đầu là 2
       let start = this.pageIndex > 3 ? this.pageIndex - 1 : 2;
-      let end =
-        this.pageIndex < this.totalPages - 3 ? this.pageIndex + 1 : this.totalPages - 1;
+      // Nút kết thúc < tổng số trang - 3 thì nút kết thúc là giá trị trang hiện tại + 1 còn nếu không thì tổng số trang - 1
+      let end = this.pageIndex < this.totalPages - 3 ? this.pageIndex + 1 : this.totalPages - 1;
+      
+      // Đẩy vào mảng ps chứa các nút được phép hiển thị khi phân trang
       for (let i = start; i <= end; i++) ps.push(i);
       return ps;
     },

@@ -1,14 +1,19 @@
 <template>
+<!-- :class="{'display': popState}" -->
     <div class="popup" :class="{'display': popState}">
         <div class="model"></div>
         <div class="popup-box">
           <div class="popup-content">
-            <div class="popup-icon exclamation-warning-48"></div>
-            <div class="message">Bạn có thực sự muốn xóa Nhân viên &lt;{{employeeClickCode}}&gt; không?</div>
+            
+            <div v-if="employeeClickCode != null" class="popup-icon exclamation-warning-48"></div>           
+            <div v-if="employeeClickCode != null" class="message">Bạn có thực sự muốn xóa Nhân viên &lt;{{employeeClickCode}}&gt; không?</div>
+            <div v-if="message != null" class="popup-icon mi-exclamation-error-48-2"></div>
+            <div v-if="message != null" class="message">{{ message }}</div>
           </div>
           <div class="btn-footer">
-            <button class="btn-No" @click="btnNoClick">Không</button>
-            <button class="btn-yes" @click="btnYesClick">Có</button>
+            <button v-if="employeeClickCode != null" class="btn-No" @click="btnNoClick">Không</button>
+            <button v-if="employeeClickCode != null" class="btn-yes" @click="btnYesClick">Có</button>
+            <button v-if="message != null" class="btn-close" @click="btnNoClick" style="margin-left: 145px;">Đóng</button>
           </div>
         </div>
     </div>
@@ -19,7 +24,8 @@ export default {
     props:{
       popState:{ type: Boolean, selector: false},
       employeeClickCode:{ type: String, selector: null},
-      employeeClickId:{ type: String, selector: null}
+      employeeClickId:{ type: String, selector: null},
+      message: {type: String, selector: null}
     },
     methods:{
       btnNoClick(){
@@ -118,7 +124,21 @@ export default {
   font-weight: 700;
   padding: 8px 20px;
 }
+.btn-close{
+  width: 76px;
+  height: 36px;
+  background-color: #2ca01c;
+  border: none;
+  color: white;
+  outline: none;
+  border-radius: 4px;
+  font-weight: 700;
+  padding: 8px 20px;
+}
 .display{
   display: none;
+}
+.mi-exclamation-error-48-2 {
+    background-position: -24px -954px;
 }
 </style>

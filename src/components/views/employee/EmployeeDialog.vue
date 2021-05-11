@@ -1,5 +1,6 @@
 <template>
-  <div class="dialog" :class="{'dialog-hide': !state}">
+<!-- :class="{'dialog-hide': !state}" -->
+  <div class="dialog" v-if="state">  
     <div class="model"></div>
     <div class="dialog-box">
       <div class="dialog-header">
@@ -166,12 +167,19 @@
             </div>
           </div>
       </div>
+      <Popup v-if="valuePopup" @hidePopupNotLoad="valuePopup = false" :message="message"/>
     </div>
+    
   </div>
 </template>
 <script>
 import axios from 'axios'
+import Popup from './Popup.vue'
 export default {
+  components:{
+    Popup
+  },
+
   props:{
     state:{ type: Boolean, selector: false},          // Trạng thái hiển thị Dialog
     employee:{ type: Object, selector: null},         // Đối tượng nhân viên được truyền từ EmployeeList sang
@@ -181,7 +189,9 @@ export default {
     return {
       infor: true,                // Giá trị hiển thị tab Liên hệ hay tài khoản ngân hàng              
       messageEmail: null,         // Message lỗi
-      departments: [],
+      departments: [],          // Mảng phòng ban
+      message: null,
+      valuePopup: false,
     }
   },
   methods: {
@@ -217,14 +227,27 @@ export default {
     */
     btnSaveClick(){
       // Kiểm tra nút Thêm hay Sửa
+      //let employeeCode = this.employee.employeeCode;
+      //let fullName = this.employee.fullName;
+      // let departmentName = this.
+      // if(){
+
+      // }
       if(this.flag == "add"){       
         axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
           console.log(res.data);
+          console.log(this.message);
           this.$emit('hideDialog');
         }).catch(res =>{
-          console.log(res.data);
+          // Lấy ra message lỗi
+          console.log(res.response.data.devMsg);
+          this.message = res.response.data.devMsg;
+          // show popup
+          this.valuePopup = true;
+
+          console.log(this.message);
           console.log(this.employee);
-          this.$emit('hideDialog');
+          // this.$emit('hideDialog');
         })
       }
       // Kiểm tra nút Thêm hay Sửa
@@ -287,7 +310,7 @@ export default {
 }
 
 .dialog .dialog-box {
-  z-index: 1000;
+  z-index: 100;
   border-radius: 4px;
   width: 900px;
   height: 625px;
