@@ -27,7 +27,7 @@
                       <div class="code">
                         <span class="text">Mã<p style="color: red; display: inline;"> *</p></span>
                         <ValidationProvider name="Mã nhân viên" rules="required" v-slot="{ errors }">
-                          <input type="text" :title="errors[0]" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode" :class="errors[0] == null ? '' : 'input-error'">
+                          <input type="text" ref="code" :title="errors[0]" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode" :class="errors[0] == null ? '' : 'input-error'">
                         </ValidationProvider>
                       </div>
                       <div class="name">
@@ -61,13 +61,21 @@
                       <div class="gender">
                         <span class="text">Giới tính</span>
                         <div class="radio" style="width: 251px; margin-top: 4px;">
-                          <input type="radio" name="gender" class="input-radio" value="1" v-model="employee.gender">
+                          <input id="male" type="radio" name="gender" class="input-radio" value="1" v-model="employee.gender">
+                          
                           <label for="" style="margin-right: 20px;">Nam</label>
-                          <input type="radio" name="gender" class="input-radio" value="0" v-model="employee.gender">
+                          <input id="female" type="radio" name="gender" class="input-radio" value="0" v-model="employee.gender">
+                          
                           <label for="" style="margin-right: 20px;">Nữ</label>
-                          <input type="radio" name="gender" class="input-radio" value="2" v-model="employee.gender">
+                          <input id="orther" type="radio" name="gender" class="input-radio" value="2" v-model="employee.gender">
+                          
                           <label for="">Khác</label>
                         </div>
+                        <!-- <div class="radio absolute">
+                          <label for="male" class="label-input"></label>
+                          <label for="female" class="label-input" style="margin-left: 56px;"></label>
+                          <label for="orther" class="label-input" style="margin-left: 45px;"></label>
+                        </div> -->
                       </div>
                   </div>
                   <div class="row-1">
@@ -283,7 +291,7 @@ export default {
     }).catch(res =>{
       console.log(res);
     })
-  }
+  },
 };
 </script>
 <style scoped>
@@ -492,9 +500,13 @@ input[type='radio']:checked:after {
   border-left: 1px solid #c9ccd2;
   outline: none;
   background-color: white;
+  font-family: GoogleSans-Regular;
 }
 .inf:hover{
   color: #019160;
+}
+.inf:focus{
+  background-color: rgb(205, 240, 236);
 }
 .bank{
   padding: 0 8px;
@@ -507,9 +519,13 @@ input[type='radio']:checked:after {
   border-right: 1px solid #c9ccd2;
   outline: none;
   background-color: white;
+  font-family: GoogleSans-Regular;
 }
 .bank:hover{
   color: #019160;
+}
+.bank:focus{
+  background-color: rgb(205, 240, 236);
 }
 .content-tblEmployee{
   height: 145px;
@@ -556,5 +572,31 @@ input[type='radio']:checked:after {
 }
 .input-error{
   border: 1px solid red;
+}
+.label-input{
+  height: 21px;
+  width: 21px;
+  border-radius: 50%;
+  border: 1px solid #3ff128;
+  background-color: white;
+}
+.label-input:checked{
+  /* content: ""; */
+  height: 13px;
+  width: 13px;
+  border: none;
+  background-color: #3ff128;
+  position: absolute;
+  border-radius: 50%;
+  margin-left: 3px;
+  margin-top: 3px;
+}
+.absolute{
+  position: absolute;
+  top: 91px;
+  right: 22px;
+  display: flex;
+  width: 251px;
+  height: 32px;
 }
 </style>

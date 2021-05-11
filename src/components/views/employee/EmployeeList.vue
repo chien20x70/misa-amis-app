@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content">   
     <div class="box">
       <div class="content-item">
         <div class="content-item-text">Nhân viên</div>
@@ -122,18 +122,23 @@
       <div class="content-navpage">
         <div class="content-navpage-text-left">Tổng số: {{totalRecord}} bản ghi</div>
         <div class="footer-complete">
-          <!-- <div class="autocomplete">
+          
+          <Selectcustom :selectState="valueSelect" @passValueToSelect="GetValueFromSelect"/>
+          <div class="autocomplete">
             <div class="selected-option">
-              <div class=""></div>
+              <input type="text" class="input-select" :value="msgSelected">
+              <div class="icon-selected">
+                <div class="header-icon arrow-dropdown" @click="valueSelect = !valueSelect"></div>
+              </div>
             </div>
-          </div> -->
-          <select name="" id="" :value="pageSize" @change.prevent="onSelectedValue">
+          </div>
+          <!-- <select name="" id="" :value="pageSize" @change.prevent="onSelectedValue">
             <option value="10">10 bản ghi trên 1 trang</option>
             <option value="20">20 bản ghi trên 1 trang</option>
             <option value="30">30 bản ghi trên 1 trang</option>
             <option value="40">50 bản ghi trên 1 trang</option>
             <option value="50">100 bản ghi trên 1 trang</option>
-          </select>
+          </select> -->
           <button class="style margin" :class="{'disable': (pageIndex == 1)}" @click="onClickPag(pageIndex - 1)">Trước</button>
           <button class="style margin" :class="{'active': (pageIndex == 1)}" @click="onClickPag(1)">1</button>
           <button v-if="pageIndex > 3" class="style margin disable">...</button>
@@ -161,12 +166,14 @@
 import EmployeeDialog from "./EmployeeDialog.vue";
 import Dropdown from "./Dropdown.vue"
 import Popup from "./Popup.vue"
+import Selectcustom from "./SelectCustom.vue" 
 import axios from "axios";
 export default {
   components: {
     EmployeeDialog,
     Dropdown,
-    Popup
+    Popup,
+    Selectcustom
   },
   data() {
     return {
@@ -183,6 +190,9 @@ export default {
       filter:  "",              // Giá trị truyền vào input để lọc
       pageIndex: 1,             // Trang hiện tại
       totalPages: 1,            // Tổng số trang
+      valueSelect: true,
+      msgSelect: " bản ghi trên 1 trang",
+      msgSelected: null,
     };
   },
   created() {
@@ -220,6 +230,11 @@ export default {
     btnAddClick() {
       // Hiển thị dialog
       this.show = true;
+
+      this.$nextTick(function () {
+        console.log(this.$refs.code);
+          this.$refs.code.focus();
+      })
       // Gán giá trị là nút Thêm mới
       this.status = "add";
       axios
@@ -379,14 +394,14 @@ export default {
     - Lọc lại mảng nhân viên khi click.
     CreatedBy: NXCHIEN 10/05/2021 
     */
-    onSelectedValue(e){
-      let val = e.target.value
-      console.log(e.target.value);
-      this.pageSize = val;
-      console.log(this.filter);
-      this.filterData();
+    // onSelectedValue(e){
+    //   let val = e.target.value
+    //   console.log(e.target.value);
+    //   this.pageSize = val;
+    //   console.log(this.filter);
+    //   this.filterData();
       
-    },
+    // },
 
     /* 
     Kiểm tra click thay đổi phân trang
@@ -405,6 +420,13 @@ export default {
     */
     btnExportClick(){
       window.open(`https://localhost:44314/api/v1/Employees/ExportingExcel?pageSize=${this.pageSize}&pageIndex=${this.pageIndex}&filter=${this.filter}`,"_blank");
+    },
+   
+    GetValueFromSelect(value){
+      this.msgSelected = value + this.msgSelect;
+      this.pageSize = value;
+      this.filterData();
+      this.valueSelect = true;
     },
     /* 
     Format dữ liệu ngày tháng năm theo định dạng yyyy-mm-dd
@@ -707,6 +729,7 @@ export default {
     width: calc(100% - 32px);
     align-items: center;
     padding: 6px 0 6px 12px;
+    justify-content: space-around;
 }
 .style{
   border: none;
@@ -740,5 +763,21 @@ export default {
     height: 74px;
     left: 45%;
 }
+.input-select{
+    background-color: transparent;
+    display: flex;
+    padding: 0;
+    height: 19px;
+    width: 154px;
+    border: none;
+}
+.icon-selected{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.arrow-dropdown {
+    background-position: -560px -359px;
+}
 </style>
