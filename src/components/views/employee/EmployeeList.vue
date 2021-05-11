@@ -79,9 +79,9 @@
               <th>CHI NHÁNH TK NGÂN HÀNG</th>
               <th>CHỨC NĂNG</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr
+          </thead>         
+          <tbody v-if="employees != undefined">
+            <tr              
               v-for="(employee, index) in employees"
               :key="index"
               @dblclick="dblClickTable(employee.employeeId)"
@@ -112,6 +112,12 @@
             </tr>
           </tbody>
         </table>
+        <div class="message" v-if="employees == undefined">
+            <div class="img-report">
+              <img src="https://actappg2.misacdn.net/img/bg_report_nodata.76e50bd8.svg" alt="" class="nodata-img">
+            </div>
+            <div class="img-report">Không có dữ liệu</div>            
+          </div>
       </div>
       <div class="content-navpage">
         <div class="content-navpage-text-left">Tổng số: {{totalRecord}} bản ghi</div>
@@ -131,9 +137,9 @@
           <button class="style margin" :class="{'disable': (pageIndex == 1)}" @click="onClickPag(pageIndex - 1)">Trước</button>
           <button class="style margin" :class="{'active': (pageIndex == 1)}" @click="onClickPag(1)">1</button>
           <button v-if="pageIndex > 3" class="style margin disable">...</button>
-          <button v-for="p in pageIndexs" :key="p" class="style margin" :class="{ active: pageIndexs == p }" @click="onClickPag(p)">{{ p }}</button>
+          <button v-for="p in pageIndexs" :key="p" class="style margin" :class="{ 'active': pageIndex == p }" @click="onClickPag(p)">{{ p }}</button>
           <button v-if="pageIndex < totalPages - 3" class="style margin disable">...</button>
-          <button class="style margin" :class="{'disable': (pageIndex == totalPages), 'display': (totalPages == 1)}" @click="onClickPag(totalPages)">{{totalPages}}</button>
+          <button class="style margin" :class="{'display': (totalPages == 1), 'active': pageIndex == totalPages}" @click="onClickPag(totalPages)">{{totalPages}}</button>
           <button class="style margin" :class="{'disable': (pageIndex == totalPages)}" @click="onClickPag(pageIndex + 1)">Sau</button>
         </div>        
       </div>
@@ -322,6 +328,7 @@ export default {
     btnRefreshClick(){
       this.loadData();
       this.totalPages = 1;
+      this.pageIndex = 1;
     },
 
     /* 
@@ -334,10 +341,15 @@ export default {
         .get(`https://localhost:44314/api/v1/Employees/Filter?pageSize=${this.pageSize}&pageIndex=${this.pageIndex}&filter=${this.filter}`)
         .then((response) => {
           console.log(response);
-          this.employees = response.data.data;
+          this.employees = response.data.data;            
           this.totalRecord = this.employees.length;
           this.totalPages = response.data.totalPages;
-          console.log(this.totalPages);         
+          console.log(this.totalPages);
+          // if(this.employees == undefined){
+          //   this.totalPages = 1;
+          //   this.pageIndex = 1;
+          //   this.totalRecord = 0;
+          // } 
         })
         .catch((response) => {
           console.log(response);
@@ -523,7 +535,7 @@ export default {
   background-position: -848px -359px;
 }
 .line {
-  left: -16px;
+  left: -20px;
   height: 20px;
   top: 0;
   position: absolute;
@@ -592,11 +604,20 @@ export default {
 .refresh {
   background-position: -423px -201px;
 }
+.refresh:hover{
+  background-position: -1097px -88px;
+}
 .excel__nav {
   background-position: -704px -200px;
 }
+.excel__nav:hover{
+  background-position: -704px -256px;
+}
 .setting__list {
   background-position: -88px -200px;
+}
+.setting__list:hover{
+  background-position: -88px -256px;
 }
 .check-box {
   height: 16px;
@@ -698,7 +719,26 @@ export default {
   cursor: not-allowed;
 }
 .active{
-  font-weight: 700;
+  font-weight: 800;
+  border: 1px solid #bbb;
+}
+.message{
+  height: 191px;
+  width: 100% !important;
+  display: block;
+}
+.img-report{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.nodata-img {
+    position: sticky;
+    margin: 50px 50px 30px;
+    width: 132px;
+    height: 74px;
+    left: 45%;
 }
 
 </style>
