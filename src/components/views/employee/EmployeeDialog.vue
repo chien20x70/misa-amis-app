@@ -40,9 +40,7 @@
                       <div class="position">
                         <span class="text">Đơn vị<p style="color: red; display: inline;"> *</p></span>
                         <select style="width: 392px; margin-top: 4px;" v-model="employee.departmentId">
-                          <option value="f79d916a-ae77-11eb-8a1f-00163e047e89">Phòng Nhân sự</option>
-                          <option value="f79d9419-ae77-11eb-8a1f-00163e047e89">Phòng Đào tạo</option>
-                          <option value="f79d915a-ae77-11eb-8a1f-00163e047e89">Phòng quản lý</option>
+                          <option v-for="(department, index) in departments" :key="index" :value="department.departmentId">{{department.departmentName}}</option>
                         </select>
                       </div>
                   </div>
@@ -183,6 +181,7 @@ export default {
     return {
       infor: true,                // Giá trị hiển thị tab Liên hệ hay tài khoản ngân hàng              
       messageEmail: null,         // Message lỗi
+      departments: [],
     }
   },
   methods: {
@@ -253,8 +252,15 @@ export default {
       } else {
         this.messageEmail = "Email Không đúng định dạng!";
       }     
-    },
+    },    
   },
+  mounted: function(){
+    axios.get("https://localhost:44314/api/v1/Departments").then(res =>{
+      this.departments = res.data;
+    }).catch(res =>{
+      console.log(res);
+    })
+  }
 };
 </script>
 <style scoped>

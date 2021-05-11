@@ -134,7 +134,7 @@
           <button v-for="p in pageIndexs" :key="p" class="style margin" :class="{ active: pageIndexs == p }" @click="onClickPag(p)">{{ p }}</button>
           <button v-if="pageIndex < totalPages - 3" class="style margin disable">...</button>
           <button class="style margin" :class="{'disable': (pageIndex == totalPages), 'display': (totalPages == 1)}" @click="onClickPag(totalPages)">{{totalPages}}</button>
-          <button class="style margin">Sau</button>
+          <button class="style margin" :class="{'disable': (pageIndex == totalPages)}" @click="onClickPag(pageIndex + 1)">Sau</button>
         </div>        
       </div>
     </div>
@@ -357,6 +357,7 @@ export default {
       clearTimeout(this.timeOut);
       this.timeOut = setTimeout(() => {
         this.filter = val;
+        this.pageIndex = 1;
         console.log(this.filter)
         this.filterData();
       }, 1000);

@@ -41,12 +41,16 @@ Vue.filter('dateFormatDDMMYY', function (date) {
 
 Vue.filter('showDepartment', function (value) {
   if (!value) return ''
-  if (value == "f79d916a-ae77-11eb-8a1f-00163e047e89") {
-    return "Phòng nhân sự";
-  } else if (value == "f79d9419-ae77-11eb-8a1f-00163e047e89") {
-    return "Phòng đào tạo";
-  } else if (value == "f79d915a-ae77-11eb-8a1f-00163e047e89") {
-    return "Phòng quản lý";
+  if (value == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {
+    return "Phòng Nhân sự";
+  } else if (value == "142cb08f-7c31-21fa-8e90-67245e8b283e") {
+    return "Phòng Kế toán";
+  } else if (value == "17120d02-6ab5-3e43-18cb-66948daf6128") {
+    return "Phòng Đào tạo";
+  } else if(value == "469b3ece-744a-45d5-957d-e8c757976496"){
+    return "Phòng Marketing"
+  } else if(value == "4e272fc4-7875-78d6-7d32-6a1673ffca7c"){
+    return "Phòng Nghiên cứu"
   }
 })
 
