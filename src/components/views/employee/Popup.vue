@@ -93,7 +93,7 @@ export default {
 .message{
   padding: 12px 0 0 16px;
   display: block;
-  margin-bottom: 32px; 
+  margin-bottom: 32px;
 }
 .btn-footer{
   display: flex;

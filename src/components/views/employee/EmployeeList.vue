@@ -128,7 +128,8 @@
             <div class="selected-option">
               <input type="text" class="input-select" :value="msgSelected">
               <div class="icon-selected">
-                <div class="header-icon arrow-dropdown" @click="valueSelect = !valueSelect"></div>
+                <!-- @click="valueSelect = !valueSelect" -->
+                <div class="header-icon arrow-dropdown" @click="showSelected" :class="{'tranform': valueSelect == false}"></div>
               </div>
             </div>
           </div>
@@ -231,10 +232,10 @@ export default {
       // Hiển thị dialog
       this.show = true;
 
-      this.$nextTick(function () {
-        console.log(this.$refs.code);
-          this.$refs.code.focus();
-      })
+      // this.$nextTick(function () {
+      // //   console.log(this.$refs.code);
+      // //     this.$refs.code.focus();
+      // // })
       // Gán giá trị là nút Thêm mới
       this.status = "add";
       axios
@@ -427,6 +428,10 @@ export default {
       this.pageSize = value;
       this.filterData();
       this.valueSelect = true;
+    },
+
+    showSelected(){
+      this.valueSelect = !this.valueSelect;
     },
     /* 
     Format dữ liệu ngày tháng năm theo định dạng yyyy-mm-dd
@@ -774,10 +779,16 @@ export default {
 .icon-selected{
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; 
 }
-
+.icon-selected:hover{
+  background-color: #bbb;
+}
 .arrow-dropdown {
     background-position: -560px -359px;
+}
+.tranform{
+  transform: rotate(180deg);
+  transition: transform .15s linear;
 }
 </style>

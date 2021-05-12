@@ -1,6 +1,7 @@
 <template>
 <!-- :class="{'dialog-hide': !state}" -->
-  <div class="dialog" v-if="state">  
+  <div class="dialog" v-if="state">
+    
     <div class="model"></div>
     <div class="dialog-box">
       <div class="dialog-header">
@@ -27,7 +28,7 @@
                       <div class="code">
                         <span class="text">Mã<p style="color: red; display: inline;"> *</p></span>
                         <ValidationProvider name="Mã nhân viên" rules="required" v-slot="{ errors }">
-                          <input type="text" ref="code" :title="errors[0]" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode" :class="errors[0] == null ? '' : 'input-error'">
+                          <input type="text" ref="focusCode" :title="errors[0]" style="width: 151px; margin-top: 4px;" v-model="employee.employeeCode" :class="errors[0] == null ? '' : 'input-error'">
                         </ValidationProvider>
                       </div>
                       <div class="name">
@@ -63,7 +64,7 @@
                         <div class="radio" style="width: 251px; margin-top: 4px;">
                           <input id="male" type="radio" name="gender" class="input-radio" value="1" v-model="employee.gender">
                           
-                          <label for="" style="margin-right: 20px;">Nam</label>
+                          <label for="male" style="margin-right: 20px;">Nam</label>
                           <input id="female" type="radio" name="gender" class="input-radio" value="0" v-model="employee.gender">
                           
                           <label for="" style="margin-right: 20px;">Nữ</label>
@@ -200,6 +201,20 @@ export default {
       departments: [],          // Mảng phòng ban
       message: null,
       valuePopup: false,
+      valueForcusInput: false,
+    }
+  },
+
+  // Focus Input
+  updated(){
+    while(this.valueForcusInput == true){
+      if (this.$refs.focusCode !== undefined) {
+        this.$refs.focusCode.focus();
+      }
+      this.valueForcusInput = false;
+    }
+    if(this.state == false){
+      this.valueForcusInput = true;
     }
   },
   methods: {
@@ -235,11 +250,13 @@ export default {
     */
     btnSaveClick(){
       // Kiểm tra nút Thêm hay Sửa
-      //let employeeCode = this.employee.employeeCode;
-      //let fullName = this.employee.fullName;
-      // let departmentName = this.
-      // if(){
-
+      // let employeeCode = this.employee.employeeCode;
+      // let fullName = this.employee.fullName;
+      // let departmentId = this.employee.departmentId;
+      // let phoneNumber = this.employee.phoneNumber;
+      // let email = this.employee.email;     
+      // if(employeeCode == "" || fullName == "" || departmentId == "" || phoneNumber == "" || email == ""){
+        
       // }
       if(this.flag == "add"){       
         axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
@@ -285,13 +302,21 @@ export default {
       }     
     },    
   },
+
   mounted: function(){
+    // if (this.$refs.employeeCode != undefined) {
+    //     this.$refs.employeeCode.focus();
+    //   }
+    
     axios.get("https://localhost:44314/api/v1/Departments").then(res =>{
       this.departments = res.data;
-    }).catch(res =>{
+    }).then(() => {
+    })
+    .catch(res =>{
       console.log(res);
     })
   },
+
 };
 </script>
 <style scoped>

@@ -1,10 +1,6 @@
 <template>
     <div class="select-custom" :class="{'invisible': selectState}">
-        <div class="item" value="10" @click="btnSelectClick(10)">10 bản ghi trên 1 trang</div>
-        <div class="item" value="20" @click="btnSelectClick(20)">20 bản ghi trên 1 trang</div>
-        <div class="item" value="30" @click="btnSelectClick(30)">30 bản ghi trên 1 trang</div>
-        <div class="item" value="50" @click="btnSelectClick(50)">50 bản ghi trên 1 trang</div>
-        <div class="item" value="100" @click="btnSelectClick(100)">100 bản ghi trên 1 trang</div>
+        <div class="item" v-for="(item, index) in lists" :key="index" :value="item.value" @click="btnSelectClick(item.value)" :class="{'color': item.value == saveValue}">{{item.content}}</div>
     </div>
 </template>
 
@@ -17,11 +13,19 @@ export default {
         btnSelectClick(value){
             this.addClass = true;
             this.$emit('passValueToSelect', value);
+            this.saveValue = value;
         }
     },
     data(){
         return{
-            addClass: false,
+            addClass: true,
+            lists: [{ content: '10 bản ghi trên 1 trang', value: 10},
+                   { content: '20 bản ghi trên 1 trang', value: 20},   
+                   { content: '30 bản ghi trên 1 trang', value: 30},
+                   { content: '50 bản ghi trên 1 trang', value: 50},
+                   { content: '100 bản ghi trên 1 trang', value: 100}
+                ],
+            saveValue: null,
         }
     }
     
