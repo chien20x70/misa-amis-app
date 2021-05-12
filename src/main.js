@@ -4,9 +4,9 @@ import VueRouter from 'vue-router'
 import EmployeeList from './components/views/employee/EmployeeList.vue'
 import '../src/assets/font/fontawesome-5.15.1/css/all.min.css'
 import { ValidationProvider, extend } from 'vee-validate';
-import VueHotkey from 'v-hotkey'
 
-Vue.use(VueHotkey)
+
+
 /* 
 Validate các trường để trống thì thông báo lỗi
 CreatedBy: NXCHIEN 10/05/2021

@@ -250,6 +250,7 @@ export default {
           this.selectedEmployee = {};
           // Gán code Max cho ô Mã nhân viên
           this.selectedEmployee.employeeCode = "NV-" + (Number(increCode) + 1);
+          this.selectedEmployee.departmentId = "";
         })
         .catch((response) => {
           console.log(response);
@@ -438,6 +439,9 @@ export default {
     CreatedBy: NXCHIEN 10/05/2021 
     */
     dateFormatYYMMDD(date) {
+      // if(date == "1-01-01"){
+      //   return `1970-1-1`;
+      // }
       var newDate = new Date(date);
       var day = newDate.getDate();
       var month = newDate.getMonth() + 1;

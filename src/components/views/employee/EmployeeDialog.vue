@@ -42,20 +42,26 @@
                       <div class="position">
                         <span class="text">Đơn vị<p style="color: red; display: inline;"> *</p></span>
 
-                        <select style="width: 392px; margin-top: 4px;" v-model="employee.departmentId">
+                        <!-- <select style="width: 392px; margin-top: 4px;" v-model="employee.departmentId">
                           <option v-for="(department, index) in departments" :key="index" :value="department.departmentId">{{department.departmentName}}</option>
-                        </select>
-                        <!-- <ValidationProvider name="Phòng ban" rules="required" v-slot="{ errors }">
-                        <div class="department-box" style="margin-top: 4px;" :class="errors[0] == null ? '' : 'box-error'">
+                        </select> -->
+
+                        <div class="department-box" style="margin-top: 4px;">
                           <div class="selected-option">                            
-                              <input type="text" :title="errors[0]" class="input-select" v-model="showValueDepartment" >                            
+                              <input type="text" class="input-select" v-model="showValueDepartment" >
+                              <!-- <input type="text" class="input-select" v-if="showValueEmployeeDepartment != ''" v-model="showValueEmployeeDepartment" >                            -->
                             <div class="icon-selected">
                               <div class="dialog-icon-16 arrow-dropdown" @click="btnDropdownClick"></div>
                             </div>
                           </div>
                         </div>
-                        </ValidationProvider>
-                        <SelectCustomDeparment :valueShowDepartment="showDepartment" @passValueDepartment="getValueDepartment"/> -->
+
+                        <div class="select-custom" :class="{'invisible' : showDepartment}">
+                            <div class="item" v-for="(department, index) in departments" :key="index" :value="department.departmentId" @click="btnDepartmentClick(department.departmentId)"
+                            :class="{'color': saveValueDepartment == department.departmentId}"
+                            >{{department.departmentName}}</div>
+                        </div>
+                        <!-- <SelectCustomDeparment :valueShowDepartment="showDepartment" @passValueDepartment="getValueDepartment"/> -->
 
 
                       </div>
@@ -220,32 +226,49 @@ export default {
       valuePopup: false,          // Giá trị để hiển thị Popup
       valueForcusInput: false,    // Giá trị để focus vào ô input
       showDepartment: true,
-      DepartmentId: null
+      DepartmentId: null,
+      saveValueDepartment: null
     }
   },
 
-  // computed:{
-  //   showValueDepartment:{     
-  //     get(){
-  //       if (this.employee.departmentId == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {
-  //         return "Phòng Nhân sự";
-  //       } else if (this.employee.departmentId == "142cb08f-7c31-21fa-8e90-67245e8b283e") {
-  //         return "Phòng Kế toán";
-  //       } else if (this.employee.departmentId == "17120d02-6ab5-3e43-18cb-66948daf6128") {
-  //         return "Phòng Đào tạo";
-  //       } else if(this.employee.departmentId == "469b3ece-744a-45d5-957d-e8c757976496"){
-  //         return "Phòng Marketing"
-  //       } else if(this.employee.departmentId == "4e272fc4-7875-78d6-7d32-6a1673ffca7c"){
-  //         return "Phòng Nghiên cứu"
-  //       }
-  //       return ""
-  //     },
-  //     set(value){
-  //       this.employee.departmentId = value;
-  //     }
-  //   },
+  computed:{
+    showValueDepartment:{     
+      get(){
+        if (this.saveValueDepartment == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {
+          return "Phòng Nhân sự";
+        } else if (this.saveValueDepartment == "142cb08f-7c31-21fa-8e90-67245e8b283e") {
+          return "Phòng Kế toán";
+        } else if (this.saveValueDepartment == "17120d02-6ab5-3e43-18cb-66948daf6128") {
+          return "Phòng Đào tạo";
+        } else if(this.saveValueDepartment == "469b3ece-744a-45d5-957d-e8c757976496"){
+          return "Phòng Marketing"
+        } else if(this.saveValueDepartment == "4e272fc4-7875-78d6-7d32-6a1673ffca7c"){
+          return "Phòng Nghiên cứu"
+        }else if (this.employee.departmentId == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {
+          return "Phòng Nhân sự";
+        } else if (this.employee.departmentId == "142cb08f-7c31-21fa-8e90-67245e8b283e") {
+          return "Phòng Kế toán";
+        } else if (this.employee.departmentId == "17120d02-6ab5-3e43-18cb-66948daf6128") {
+          return "Phòng Đào tạo";
+        } else if(this.employee.departmentId == "469b3ece-744a-45d5-957d-e8c757976496"){
+          return "Phòng Marketing"
+        } else if(this.employee.departmentId == "4e272fc4-7875-78d6-7d32-6a1673ffca7c"){
+          return "Phòng Nghiên cứu"
+        }
+        return ""
+      },
+      set(value){       
+        while(this.employee.departmentId == ""){
+          this.saveValueDepartment = value;          
+        }
+        while(this.employee.departmentId != ""){
+          this.employee.departmentId = value;
+        }
+        
+      }
+    }, 
     
-  // },
+  },
 
   // Focus Input
   updated(){
@@ -272,6 +295,7 @@ export default {
     btnCloseClick(){
       this.messageEmail = null;     
       this.$emit('hideDialogNotLoad');
+      this.saveValueDepartment = null;
     },
 
     /* 
@@ -296,16 +320,17 @@ export default {
     */
     btnSaveClick(){
       // Kiểm tra nút Thêm hay Sửa
-      let dateOfBirth = this.employee.dateOfBirth;
-      if(dateOfBirth == "0001-01-01T00:00:00"){
-        this.message = "Ngày sinh không thể để trống";
+      //let dateOfBirth = this.employee.dateOfBirth;
+      if(this.employee.departmentId == null){
+        this.message = "Vui lòng chọn Đơn vị!"
         this.valuePopup = true;
       }
-        if(this.flag == "add"){       
+      else if(this.flag == "add"){       
           axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
             console.log(res.data);
             console.log(this.message);
             this.$emit('hideDialog');
+            this.saveValueDepartment = null;
           }).catch(res =>{
             // Lấy ra message lỗi
             console.log(res.response.data.devMsg);
@@ -323,6 +348,7 @@ export default {
           axios.put('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
             console.log(res.data);         
             this.$emit('hideDialog');
+            this.saveValueDepartment = null;
           }).catch(res =>{
             console.log(res.data);
             console.log(this.employee)
@@ -352,8 +378,22 @@ export default {
     },
 
     btnDropdownClick(){
-    this.showDepartment = !this.showDepartment;
+
+      this.showDepartment = !this.showDepartment;
+      this.employee.departmentId = this.saveValueDepartment;
+      //this.saveValueDepartment = this.employee.departmentId;
     },
+
+    btnDepartmentClick(departmentId){
+      // if(this.showValueDepartment === ""){
+      //   // this.employee.departmentId = departmentId;
+      //   this.showValueDepartment = "Phòng Kế toán"
+      // }
+      this.saveValueDepartment = departmentId;
+      this.employee.departmentId = departmentId;     
+
+      this.showDepartment = true;
+    }
 
     // getValueDepartment(valueId){
     //   if(this.showValueDepartment == ""){
@@ -361,10 +401,8 @@ export default {
     //   }
     //   this.employee.departmentId = valueId;
 
-    //   // this.DepartmentId = valueId;
-    //   this.showDepartment = true;
-
-      
+    //   this.DepartmentId = valueId;
+    //   this.showDepartment = true; 
     // }
   },
   mounted(){
@@ -708,5 +746,32 @@ export default {
 }
 .box-error{
   border-color: red;
+}
+.select-custom{
+    position: absolute;
+    width: 392px;
+    height: 166px;
+    top: 190px;
+    min-width: 200px;
+    background-color: white;
+    border: 1px solid #bbb;
+}
+.select-custom .item{
+    height: 32px;
+    width: 100%;
+    padding: 0 14px 0 10px;
+    text-align: left;
+    line-height: 32px;
+}
+.item:hover{
+    color: #2ca01c;
+    background-color: rgb(219, 219, 219);
+}
+.invisible{
+    display: none;
+}
+.color{
+    background-color: #2ca01c;
+    color: white;
 }
 </style>
