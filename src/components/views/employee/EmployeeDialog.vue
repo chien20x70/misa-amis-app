@@ -198,15 +198,19 @@ export default {
     return {
       infor: true,                // Giá trị hiển thị tab Liên hệ hay tài khoản ngân hàng              
       messageEmail: null,         // Message lỗi
-      departments: [],          // Mảng phòng ban
-      message: null,
-      valuePopup: false,
-      valueForcusInput: false,
+      departments: [],            // Mảng phòng ban
+      message: null,              // message thông báo lỗi bind sang Popup
+      valuePopup: false,          // Giá trị để hiển thị Popup
+      valueForcusInput: false,    // Giá trị để focus vào ô input
     }
   },
 
   // Focus Input
   updated(){
+    /* 
+    Giá trị valueForcusInput = true thì focus vào input rồi gán lại false. Mỗi lần bật Dialog lên thì gán true.
+    CreatedBy: NXCHIEN 10/05/2021
+    */
     while(this.valueForcusInput == true){
       if (this.$refs.focusCode !== undefined) {
         this.$refs.focusCode.focus();
@@ -250,14 +254,7 @@ export default {
     */
     btnSaveClick(){
       // Kiểm tra nút Thêm hay Sửa
-      // let employeeCode = this.employee.employeeCode;
-      // let fullName = this.employee.fullName;
-      // let departmentId = this.employee.departmentId;
-      // let phoneNumber = this.employee.phoneNumber;
-      // let email = this.employee.email;     
-      // if(employeeCode == "" || fullName == "" || departmentId == "" || phoneNumber == "" || email == ""){
-        
-      // }
+      
       if(this.flag == "add"){       
         axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
           console.log(res.data);
@@ -303,14 +300,12 @@ export default {
     },    
   },
 
-  mounted: function(){
-    // if (this.$refs.employeeCode != undefined) {
-    //     this.$refs.employeeCode.focus();
-    //   }
-    
+  mounted: function(){    
+    /* 
+    Lấy ra danh sách các phòng ban rồi bind vào ô Select Department
+    */
     axios.get("https://localhost:44314/api/v1/Departments").then(res =>{
       this.departments = res.data;
-    }).then(() => {
     })
     .catch(res =>{
       console.log(res);

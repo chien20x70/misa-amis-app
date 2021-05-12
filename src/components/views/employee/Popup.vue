@@ -22,16 +22,22 @@
 import axios from 'axios'
 export default {
     props:{
-      popState:{ type: Boolean, selector: false},
-      employeeClickCode:{ type: String, selector: null},
-      employeeClickId:{ type: String, selector: null},
-      message: {type: String, selector: null}
+      popState:{ type: Boolean, selector: false},             // Trạng thái popup hiển thị
+      employeeClickCode:{ type: String, selector: null},      // Giá trị EmployeeCode được bind từ EmployeeList
+      employeeClickId:{ type: String, selector: null},        // Giá trị EmployeeCode được bind từ EmployeeList
+      message: {type: String, selector: null}                 // message thông báo lỗi được bind từ Dialog
     },
     methods:{
+      /* 
+      Click button 'Không' thì đóng popup mà không load lại data
+       */
       btnNoClick(){
         this.$emit("hidePopupNotLoad");
       },
 
+      /* 
+      Click button 'có' thì xóa nhân viên được chọn và đóng popup và có load lại data
+       */
       btnYesClick(){
         axios.delete("https://localhost:44314/api/v1/Employees/"+ this.employeeClickId).then(res =>{
           console.log(res);

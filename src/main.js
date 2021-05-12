@@ -7,6 +7,10 @@ import { ValidationProvider, extend } from 'vee-validate';
 import VueHotkey from 'v-hotkey'
 
 Vue.use(VueHotkey)
+/* 
+Validate các trường để trống thì thông báo lỗi
+CreatedBy: NXCHIEN 10/05/2021
+*/
 extend('required', {
   validate(value) {
     return {
@@ -30,6 +34,9 @@ const router = new VueRouter({
   routes
 })
 
+/* 
+Lọc giá trị ngày tháng năm để hiển thị lên client
+*/
 Vue.filter('dateFormatDDMMYY', function (date) { 
   if(date == null) return ""
   if(date == "0001-01-01T00:00:00") return ""
@@ -42,6 +49,10 @@ Vue.filter('dateFormatDDMMYY', function (date) {
   return `${day}/${month}/${year}`;
 })
 
+/* 
+Lọc Phòng ban để hiển thị lên client
+CreatedBy: NXCHIEN 10/05/2021
+*/
 Vue.filter('showDepartment', function (value) {
   if (!value) return ''
   if (value == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {

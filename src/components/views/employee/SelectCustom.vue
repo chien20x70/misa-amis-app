@@ -7,25 +7,28 @@
 <script>
 export default {
     props:{
-        selectState:{ type: Boolean, selector: false}
+        selectState:{ type: Boolean, selector: false}               // Giá trị để hiển thị customSelect phần phân trang
     },
     methods:{
+        /* 
+        Khi chọn 1 dòng trong thẻ thì bind giá trị sang bên EmployeeList
+        Lưu giá trị của dòng được click để bind class color vào.
+        CreatedBY: NXCHIEN 10/05/2021
+        */
         btnSelectClick(value){
-            this.addClass = true;
             this.$emit('passValueToSelect', value);
             this.saveValue = value;
         }
     },
     data(){
         return{
-            addClass: true,
             lists: [{ content: '10 bản ghi trên 1 trang', value: 10},
                    { content: '20 bản ghi trên 1 trang', value: 20},   
                    { content: '30 bản ghi trên 1 trang', value: 30},
                    { content: '50 bản ghi trên 1 trang', value: 50},
                    { content: '100 bản ghi trên 1 trang', value: 100}
                 ],
-            saveValue: null,
+            saveValue: null,        // Giá trị của thẻ div được click
         }
     }
     
