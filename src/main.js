@@ -27,7 +27,7 @@ Vue.config.productionTip = false
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/employee', component: EmployeeList },
+  { path: '/', component: EmployeeList },
 ]
 
 const router = new VueRouter({

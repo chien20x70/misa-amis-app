@@ -41,9 +41,23 @@
                   <div class="row-1">                   
                       <div class="position">
                         <span class="text">Đơn vị<p style="color: red; display: inline;"> *</p></span>
+
                         <select style="width: 392px; margin-top: 4px;" v-model="employee.departmentId">
                           <option v-for="(department, index) in departments" :key="index" :value="department.departmentId">{{department.departmentName}}</option>
                         </select>
+                        <!-- <ValidationProvider name="Phòng ban" rules="required" v-slot="{ errors }">
+                        <div class="department-box" style="margin-top: 4px;" :class="errors[0] == null ? '' : 'box-error'">
+                          <div class="selected-option">                            
+                              <input type="text" :title="errors[0]" class="input-select" v-model="showValueDepartment" >                            
+                            <div class="icon-selected">
+                              <div class="dialog-icon-16 arrow-dropdown" @click="btnDropdownClick"></div>
+                            </div>
+                          </div>
+                        </div>
+                        </ValidationProvider>
+                        <SelectCustomDeparment :valueShowDepartment="showDepartment" @passValueDepartment="getValueDepartment"/> -->
+
+
                       </div>
                   </div>
                   <div class="row-1">                   
@@ -184,9 +198,12 @@
 <script>
 import axios from 'axios'
 import Popup from './Popup.vue'
+// import SelectCustomDeparment from './SelectCustomDeparment.vue'
+
 export default {
   components:{
-    Popup
+    Popup,
+    // SelectCustomDeparment
   },
 
   props:{
@@ -202,8 +219,33 @@ export default {
       message: null,              // message thông báo lỗi bind sang Popup
       valuePopup: false,          // Giá trị để hiển thị Popup
       valueForcusInput: false,    // Giá trị để focus vào ô input
+      showDepartment: true,
+      DepartmentId: null
     }
   },
+
+  // computed:{
+  //   showValueDepartment:{     
+  //     get(){
+  //       if (this.employee.departmentId == "11452b0c-768e-5ff7-0d63-eeb1d8ed8cef") {
+  //         return "Phòng Nhân sự";
+  //       } else if (this.employee.departmentId == "142cb08f-7c31-21fa-8e90-67245e8b283e") {
+  //         return "Phòng Kế toán";
+  //       } else if (this.employee.departmentId == "17120d02-6ab5-3e43-18cb-66948daf6128") {
+  //         return "Phòng Đào tạo";
+  //       } else if(this.employee.departmentId == "469b3ece-744a-45d5-957d-e8c757976496"){
+  //         return "Phòng Marketing"
+  //       } else if(this.employee.departmentId == "4e272fc4-7875-78d6-7d32-6a1673ffca7c"){
+  //         return "Phòng Nghiên cứu"
+  //       }
+  //       return ""
+  //     },
+  //     set(value){
+  //       this.employee.departmentId = value;
+  //     }
+  //   },
+    
+  // },
 
   // Focus Input
   updated(){
@@ -254,35 +296,45 @@ export default {
     */
     btnSaveClick(){
       // Kiểm tra nút Thêm hay Sửa
-      
-      if(this.flag == "add"){       
-        axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
-          console.log(res.data);
-          console.log(this.message);
-          this.$emit('hideDialog');
-        }).catch(res =>{
-          // Lấy ra message lỗi
-          console.log(res.response.data.devMsg);
-          this.message = res.response.data.devMsg;
-          // show popup
-          this.valuePopup = true;
+      let dateOfBirth = this.employee.dateOfBirth;
+      if(dateOfBirth == "0001-01-01T00:00:00"){
+        this.message = "Ngày sinh không thể để trống";
+        this.valuePopup = true;
+      }
+        if(this.flag == "add"){       
+          axios.post('https://localhost:44314/api/v1/Employees', this.employee).then(res =>{
+            console.log(res.data);
+            console.log(this.message);
+            this.$emit('hideDialog');
+          }).catch(res =>{
+            // Lấy ra message lỗi
+            console.log(res.response.data.devMsg);
+            this.message = res.response.data.devMsg;
+            // show popup
+            this.valuePopup = true;
 
-          console.log(this.message);
-          console.log(this.employee);
-          // this.$emit('hideDialog');
-        })
-      }
-      // Kiểm tra nút Thêm hay Sửa
-      else if(this.flag == "edit"){
-        axios.put('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
-          console.log(res.data);         
-          this.$emit('hideDialog');
-        }).catch(res =>{
-          console.log(res.data);
-          console.log(this.employee)
-          this.$emit('hideDialog');
-        })
-      }
+            console.log(this.message);
+            console.log(this.employee);
+            // this.$emit('hideDialog');
+          })
+        }
+        // Kiểm tra nút Thêm hay Sửa
+        else if(this.flag == "edit"){
+          axios.put('https://localhost:44314/api/v1/Employees/' + this.employee.employeeId, this.employee).then(res =>{
+            console.log(res.data);         
+            this.$emit('hideDialog');
+          }).catch(res =>{
+            console.log(res.data);
+            console.log(this.employee)
+            // Lấy ra message lỗi
+            console.log(res.response.data.devMsg);
+            this.message = res.response.data.devMsg;
+            // show popup
+            this.valuePopup = true;
+            //this.$emit('hideDialog');
+          })
+        }
+      
     },
 
     /* 
@@ -297,20 +349,36 @@ export default {
       } else {
         this.messageEmail = "Email Không đúng định dạng!";
       }     
-    },    
-  },
+    },
 
-  mounted: function(){    
+    btnDropdownClick(){
+    this.showDepartment = !this.showDepartment;
+    },
+
+    // getValueDepartment(valueId){
+    //   if(this.showValueDepartment == ""){
+    //     this.showValueDepartment = valueId;
+    //   }
+    //   this.employee.departmentId = valueId;
+
+    //   // this.DepartmentId = valueId;
+    //   this.showDepartment = true;
+
+      
+    // }
+  },
+  mounted(){
     /* 
     Lấy ra danh sách các phòng ban rồi bind vào ô Select Department
     */
     axios.get("https://localhost:44314/api/v1/Departments").then(res =>{
-      this.departments = res.data;
+    this.departments = res.data;
+    }).catch(res =>{
+    console.log(res);
     })
-    .catch(res =>{
-      console.log(res);
-    })
-  },
+  }
+
+  
 
 };
 </script>
@@ -467,33 +535,7 @@ export default {
   width: 20px;
   margin-right: 10px;
 }
-/* input[type='radio']:after {
-        width: 10px;
-        height: 10px;
-        border-radius: 10px;
-        top: 9px;
-        left: 3px;
-        position: relative;
-        background-color: #2ca01c;
-        content: '';
-        display: inline-block;
-        visibility: visible;
-        border: 2px solid #2ca01c;
-    }
 
-input[type='radio']:checked:after {
-        width: 10px;
-        height: 10px;
-        border-radius: 10px;
-        top: 9px;
-        left: 3px;
-        position: relative;
-        background-color: #2ca01c;
-        content: '';
-        display: inline-block;
-        visibility: visible;
-        border: 2px solid #2ca01c;
-}  */
 .select-tab{
   height: 226px;
   width: 100%;
@@ -618,5 +660,53 @@ input[type='radio']:checked:after {
   display: flex;
   width: 251px;
   height: 32px;
+}
+.department-box{
+  width: 392px;
+  height: 32px;
+  display: flex;
+  min-height: 32px;
+  border: 1px solid #babec5;
+  border-radius: 2px;
+  background-color: #fff;
+  padding: 5px 0 5px 10px;
+  outline: none;
+}
+.department-box:hover{
+  border-color: #2ca01c;
+}
+
+.input-select{
+    background-color: transparent;
+    display: flex;
+    padding: 0;
+    height: 32px;
+    width: 345px;
+    margin-right: 10px;
+    border: none; 
+}
+.selected-option{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.icon-selected{
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+.icon-selected:hover{
+  background-color: #bbb;
+}
+.arrow-dropdown {
+    background-position: -560px -359px;
+}
+.tranform{
+  transform: rotate(180deg);
+  transition: transform .15s linear;
+}
+.box-error{
+  border-color: red;
 }
 </style>

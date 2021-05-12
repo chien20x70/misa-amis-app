@@ -5,8 +5,9 @@
       <div class="logo-img"></div>
     </div>
     <div class="menu-item-list">
-      <div
+      <router-link
         class="menu-item"
+        to="/"
         v-bind:class="{ active: selectedItem == 0 }"
         v-on:click="selectItem(0)"
       >
@@ -14,10 +15,9 @@
           <div class="mi mi-24 mi-sidebar-dashboard"></div>
         </div>
         <div class="menu-item-title">Tổng quan</div>
-      </div>
-      <router-link
-        class="menu-item"
-        to="/employee"
+      </router-link>
+      <div
+        class="menu-item"        
         v-bind:class="{ active: selectedItem == 1 }"
         v-on:click="selectItem(1)"
       >
@@ -25,7 +25,7 @@
           <div class="mi mi-24 mi-sidebar-cash"></div>
         </div>
         <div class="menu-item-title">Tiền mặt</div>
-      </router-link>
+      </div>
       <div
         class="menu-item"
         v-bind:class="{ active: selectedItem == 2 }"
