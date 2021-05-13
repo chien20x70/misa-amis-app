@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="dropdown">
-      <button class="btn-btn hover padding" @click="btnDropdownClick">
+      <button class="btn-btn hover padding" @click.prevent="btnDropdownClick">
         <div class="flex btn-btn-text">
-          <div class="header-icon arrow-up--blue"></div>
+          <div class="header-icon arrow-up--blue" :class="{'border': showClass}"></div>
         </div>
       </button>
       <div class="dropdown-content" :class="{ display: !valueDrop }">
@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       valueDrop: false,       // Giá trị hiển thị dropdown-content
-      // showPopup: false,
+      showClass: false,
     };
   },
   methods: {
@@ -29,7 +29,8 @@ export default {
     CreatedBy: NXCHIEN 10/05/2021
     */
     btnDropdownClick() {
-      this.valueDrop = true;
+      this.valueDrop = !this.valueDrop;
+      this.showClass = !this.showClass;
     },
 
     /* 
@@ -130,5 +131,8 @@ export default {
 .dropdown-row-1:hover {
   color: #019160;
   background-color: rgb(224, 224, 224);
+}
+.border{
+  border: 1px solid rgb(84, 84, 250);
 }
 </style>
