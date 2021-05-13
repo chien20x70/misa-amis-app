@@ -13,17 +13,12 @@ table thead th{
     background: #eceef1;
     text-align: left;
     z-index: 1;
-    /* min-width: 120px; */
+    min-width: 100px;
 
 }
 /* table thead th:last-child{
     right: 0;
-}
-tbody tr td:last-child{
-    position: sticky;
-    right: 0;
-    border-left: 1px solid #bbb;
-} */
+}*/
 th, td {
     height: 34px;
     padding: 5px 10px;
@@ -32,16 +27,24 @@ th, td {
     /* min-width: 120px; */
     background-color: white;
 }
-/* table thead th:first-child{
+table thead th:first-child{
     max-width: 34px;
     min-width: 34px;
     width: 34px;
 }
-tbody tr td:first-child{
-    max-width: 34px;
-    min-width: 34px;
-    width: 34px;
-} */
+
+tbody tr td{
+    border-bottom: 1px dotted #c7c7c7;
+    border-right: 1px dotted #c7c7c7;
+} 
+
+th, tr td:last-child{
+    position: sticky;
+    right: 0;
+    border-left: 1px dotted #bbb;
+    border-right: none;
+    
+} 
 /* tbody tr td:first-child{
     position: sticky;
     left: 0;

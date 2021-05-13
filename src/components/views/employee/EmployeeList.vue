@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="content-table-height">
-        <table class="tblListEmployee" border="0" width="96%">
+        <table class="tblListEmployee" border="0" width="98%">
           <thead>
             <tr>
               <th style="width: 34px;">
@@ -119,7 +119,9 @@
             <div class="img-report">Không có dữ liệu</div>            
           </div>
       </div>
-      <div class="content-navpage">
+      
+    </div>
+    <div class="content-navpage">
         <div class="content-navpage-text-left">Tổng số: {{totalRecord}} bản ghi</div>
         <div class="footer-complete">
           
@@ -149,7 +151,6 @@
           <button class="style margin" :class="{'disable': (pageIndex == totalPages)}" @click="onClickPag(pageIndex + 1)">Sau</button>
         </div>        
       </div>
-    </div>
     <EmployeeDialog
       :state="show"
       @hideDialog="hideDialog"
@@ -187,17 +188,18 @@ export default {
       valuePopup: true,         // Giá trị hiển thị Popup
       recordCode: null,         // Lưu giá trị Employeecode truyền qua Popup
       totalRecord: 0,           // Tổng số bản ghi Empployee
-      pageSize: 10,             // Bao nhiêu nhân viên / trang
+      pageSize: 20,             // Bao nhiêu nhân viên / trang
       filter:  "",              // Giá trị truyền vào input để lọc
       pageIndex: 1,             // Trang hiện tại
       totalPages: 1,            // Tổng số trang
       valueSelect: true,
       msgSelect: " bản ghi trên 1 trang",
-      msgSelected: null,
+      msgSelected: "20 bản ghi trên 1 trang",
     };
   },
   created() {
-    this.loadData();
+    // this.loadData();
+    this.filterData();
   },
   methods: {
     /* 
@@ -271,7 +273,7 @@ export default {
     */
     hideDialog() {
       this.show = false;
-      this.loadData();
+      this.filterData();     
     },
 
     /* 
@@ -292,7 +294,8 @@ export default {
     */
     hidePopup(){
       this.valuePopup = true;
-      this.loadData();
+      this.filterData();
+      
     },
 
     /* 
@@ -343,7 +346,7 @@ export default {
     CreatedBy: NXCHIEN 10/05/2021 
     */
     btnRefreshClick(){
-      this.loadData();
+      this.filterData();
       this.totalPages = 1;
       this.pageIndex = 1;
     },
@@ -359,9 +362,9 @@ export default {
         .then((response) => {
           console.log(response);
           this.employees = response.data.data;            
-          this.totalRecord = this.employees.length;
+          this.totalRecord = response.data.totalRecord;
           this.totalPages = response.data.totalPages;
-          console.log(this.totalPages);
+          console.log(this.totalRecord);
           // if(this.employees == undefined){
           //   this.totalPages = 1;
           //   this.pageIndex = 1;
@@ -425,6 +428,8 @@ export default {
     },
    
     GetValueFromSelect(value){
+      this.pageIndex = 1;
+      this.msgSelected = null;
       this.msgSelected = value + this.msgSelect;
       this.pageSize = value;
       this.filterData();
@@ -439,9 +444,7 @@ export default {
     CreatedBy: NXCHIEN 10/05/2021 
     */
     dateFormatYYMMDD(date) {
-      // if(date == "1-01-01"){
-      //   return `1970-1-1`;
-      // }
+      
       var newDate = new Date(date);
       var day = newDate.getDate();
       var month = newDate.getMonth() + 1;
@@ -612,9 +615,11 @@ export default {
   background-color: white !important;
   position: absolute;
   top: 95px;
-  bottom: 0;
+  /* bottom: 0;  */
   right: 30px;
   left: 20px;
+  overflow-y: auto;
+  height: calc(100% - 162px);
 }
 .content-table .item {
   padding: 16px 16px 10px;
@@ -629,8 +634,8 @@ export default {
   justify-content: space-between;
 }
 .content-table .content-table-height {
-  height: calc(100% - 125px);
-  overflow-y: auto;
+  height: calc(100% - 128px);
+  /* overflow-y: auto;   */
 }
 .refresh {
   background-position: -423px -201px;
@@ -664,6 +669,7 @@ export default {
   align-items: center;
   display: flex;
   justify-content: space-between;
+  background-color: white;
 }
 
 .content-navpage .content-navpage-text-left {
@@ -720,6 +726,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-right: 40px;
 }
 .autocomplete{
     display: flex;
